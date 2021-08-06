@@ -1,0 +1,66 @@
+1.Отримати всі профіля з назвою професії.
+
+select profile.*, profession.profession_name from profile 
+INNER JOIN profession ON profile.profession_id = profession.id;
+
+
+
+2.Написати запит який відобразить назви всіх вакансії кожної з компаній.
+
+select distinct em.employer_name, v.vacancy_name from vacancy as v
+INNER JOIN employer as em on v.employer_id = em.id
+order by em.employer_name;
+
+
+
+3.Визначити кількість профілів по кожній професії.
+
+select count(id) as number_of_profiles, profession_id from profile
+group by profession_id having profession_id is not null;
+
+
+
+4.Визначити кількість вакансій опублікованих кожною компанією.
+
+select count(id) as number_of_vacancies, employer_id from vacancy
+group by employer_id order by number_of_vacancies desc;
+
+
+
+5.Визначити компанію, яка не опублікувала жодної вакансії.
+
+select em.id as employer_id from employer as em
+left join vacancy as v on em.id = v.employer_id
+where v.employer_id is null;
+
+
+
+6.Відобразити всі унікальні вакансії (бажано 2-ма способами).
+
+select distinct v.vacancy_name, v.description, v.profession_id, v.employer_id
+from vacancy as v;
+
+select v.vacancy_name, v.description, v.profession_id, v.employer_id
+from vacancy as v
+group by v.vacancy_name, v.description, v.profession_id, v.employer_id;
+
+
+
+7.Вивести з таблиці профілів максимальний id та дату його створення.
+
+select id, create_date from profile
+order by id desc offset 0 rows fetch next 1 rows only;
+
+
+
+8.Вивести всі компанії в яких більше 3 розміщених вакансій.
+
+select employer_id from vacancy
+group by employer_id having count(id) > 3;
+
+
+
+9.Визначити якій компанії теоретично підходить профіль пошукача.
+
+select p.id as profile_id, v.employer_id from profile as p
+inner join vacancy as v on p.profession_id = v.profession_id;
